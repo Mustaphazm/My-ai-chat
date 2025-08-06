@@ -1,0 +1,17 @@
+{
+  "name": "ai-chat-app",
+  "version": "1.0.0",
+  "description": "AI chat application with categories and news",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "vercel build",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3"
+  },
+  "devDependencies": {
+    "vercel": "^28.20.0"
+  }
+}
