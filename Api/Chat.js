@@ -9,27 +9,29 @@ export default async function handler(req, res) {
     const formattedMessage = `[${category}] ${message}`;
 
     try {
-        const response = await fetch('https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium', {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ inputs: formattedMessage })
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: formattedMessage
+                    }]
+                }]
+            })
         });
 
         const data = await response.json();
         
         if (data.error) {
-            throw new Error(data.error);
+            throw new Error(data.error.message);
         }
         
-        const aiResponse = data[0].generated_text;
+        const aiResponse = data.candidates[0].content.parts[0].text;
         
-        // Remove the user's input from the response
-        const cleanResponse = aiResponse.replace(formattedMessage, '').trim();
-        
-        res.status(200).json({ response: cleanResponse });
+        res.status(200).json({ response: aiResponse });
     } catch (error) {
         console.error('Chat API Error:', error);
         res.status(500).json({ error: 'Failed to get response from AI' });
